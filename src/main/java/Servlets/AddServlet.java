@@ -1,5 +1,6 @@
 package Servlets;
 
+import DAO.UserDAO;
 import Models.User;
 import Services.UserService;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @WebServlet("/add")
 public class AddServlet extends HttpServlet {
 
-    UserService userService = UserService.getInstance();
+    UserService userService = new UserService(UserDAO.getHibernateDAO());
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

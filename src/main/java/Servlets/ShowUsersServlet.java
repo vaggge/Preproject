@@ -1,7 +1,9 @@
 package Servlets;
 
+import DAO.UserDAO;
 import Models.User;
 import Services.UserService;
+import Util.DBHelper;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +21,7 @@ import java.util.List;
 @WebServlet("/ShowUsersServlet")
 public class ShowUsersServlet extends HttpServlet {
 
-UserService userService = UserService.getInstance();
+UserService userService = new UserService(UserDAO.getHibernateDAO());
 
 
     @Override

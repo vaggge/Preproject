@@ -1,6 +1,7 @@
 package DAO;
 
 import Models.User;
+import Util.DBHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,6 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface UserDAO {
+
+    public static UserDAO getJDBCDao(){
+        return new UserDAOJdbc(DBHelper.getMysqlConnection());
+    }
+
+    public static UserDAO getHibernateDAO(){
+        return new UserHibernateDAO(DBHelper.getSessionFactory());
+    }
 
     public boolean isUserExist(String name);
 

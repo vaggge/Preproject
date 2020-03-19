@@ -1,5 +1,6 @@
 package Servlets;
 
+import DAO.UserDAO;
 import Models.User;
 import Services.UserService;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @WebServlet("/edit")
 public class EditServlet extends HttpServlet {
 
-    UserService userService = UserService.getInstance();
+    UserService userService = new UserService(UserDAO.getHibernateDAO());
     List<String> editUser = new ArrayList<>();
 
     @Override
