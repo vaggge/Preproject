@@ -15,12 +15,20 @@ import java.sql.SQLException;
 public class DBHelper {
 
     private static SessionFactory sessionFactory;
+    private static Connection connection;
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             sessionFactory = createSessionFactory();
         }
         return sessionFactory;
+    }
+
+    public static Connection getConnection() {
+        if (connection == null) {
+            connection = getMysqlConnection();
+        }
+        return connection;
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -47,7 +55,7 @@ public class DBHelper {
         return configuration.buildSessionFactory(serviceRegistry);
     }
 
-    public static Connection getMysqlConnection() {
+    private static Connection getMysqlConnection() {
         try {
             DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
 
@@ -70,5 +78,4 @@ public class DBHelper {
             throw new IllegalStateException();
         }
     }
-
 }

@@ -9,11 +9,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDAOJdbc implements UserDAO {
+public class UserJdbcDAO implements UserDAO {
 
-    public Connection connection;
+    private Connection connection;
 
-    public UserDAOJdbc(Connection connection) {
+    public UserJdbcDAO(Connection connection){
         this.connection = connection;
     }
 
@@ -56,7 +56,6 @@ public class UserDAOJdbc implements UserDAO {
                 users.add(new User(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
             }
             resultSet.close();
-            connection.close();
             return users;
         } catch (SQLException exc) {
             exc.printStackTrace();
@@ -74,7 +73,6 @@ public class UserDAOJdbc implements UserDAO {
             preparedStatement.executeUpdate();
             connection.commit();
             preparedStatement.close();
-            connection.close();
         } catch (SQLException exc) {
             exc.printStackTrace();
         }
@@ -89,7 +87,6 @@ public class UserDAOJdbc implements UserDAO {
             preparedStatement.executeUpdate();
             preparedStatement.close();
             connection.commit();
-            connection.close();
         } catch (SQLException exc) {
             exc.printStackTrace();
         }
@@ -105,7 +102,6 @@ public class UserDAOJdbc implements UserDAO {
             preparedStatement.executeUpdate();
             preparedStatement.close();
             connection.commit();
-            connection.close();
         } catch (SQLException exc) {
             exc.printStackTrace();
         }
@@ -122,7 +118,6 @@ public class UserDAOJdbc implements UserDAO {
             preparedStatement.executeUpdate();
             preparedStatement.close();
             connection.commit();
-            connection.close();
         } catch (SQLException exc){
             exc.printStackTrace();
         }
