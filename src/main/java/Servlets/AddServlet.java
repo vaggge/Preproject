@@ -14,7 +14,7 @@ import java.io.IOException;
 @WebServlet("/add")
 public class AddServlet extends HttpServlet {
 
-    UserService userService = new UserService(UserDAO.getJDBCDao());
+    UserService userService = UserService.getInstance();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

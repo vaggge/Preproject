@@ -1,6 +1,7 @@
 package DAO;
 
 import Models.User;
+import Util.DBHelper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,15 +12,13 @@ import java.util.List;
 
 public class UserJdbcDAO implements UserDAO {
 
-    private Connection connection;
+    private DBHelper dbHelper = DBHelper.getDBHelper();
 
-    public UserJdbcDAO(Connection connection){
-        this.connection = connection;
-    }
+    public UserJdbcDAO(){}
 
     @Override
     public boolean isUserExist(String name) {
-        try {
+        try (Connection connection = dbHelper.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE name = ?");
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -33,7 +32,7 @@ public class UserJdbcDAO implements UserDAO {
     }
 
     public boolean validateUser(User user) {
-        try {
+        try (Connection connection = dbHelper.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE name = ? and password = ?");
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getPassword());
@@ -49,7 +48,7 @@ public class UserJdbcDAO implements UserDAO {
 
     @Override
     public List<User> getAllUsers() {
-        try {
+        try (Connection connection = dbHelper.getConnection()){
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM users").executeQuery();
             List<User> users = new ArrayList<User>();
             while (resultSet.next()) {
@@ -65,7 +64,7 @@ public class UserJdbcDAO implements UserDAO {
 
     @Override
     public void addUser(User user) {
-        try {
+        try (Connection connection = dbHelper.getConnection()){
             connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (name, password) values (?, ?)");
             preparedStatement.setString(1, user.getName());
@@ -80,7 +79,7 @@ public class UserJdbcDAO implements UserDAO {
 
     @Override
     public void deleteUser(String name) {
-        try {
+        try (Connection connection = dbHelper.getConnection()){
             connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM users WHERE name = ?");
             preparedStatement.setString(1, name);
@@ -94,7 +93,7 @@ public class UserJdbcDAO implements UserDAO {
 
     @Override
     public void changeUserName(String name, String newName) {
-        try {
+        try (Connection connection = dbHelper.getConnection()) {
             connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET name = ? WHERE name = ?");
             preparedStatement.setString(1, newName);
@@ -110,7 +109,7 @@ public class UserJdbcDAO implements UserDAO {
 
     @Override
     public void changeUserPassword(String name, String password) {
-        try {
+        try (Connection connection = dbHelper.getConnection()) {
             connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE users SET password = ? WHERE name = ?");
             preparedStatement.setString(1, password);

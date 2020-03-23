@@ -1,6 +1,7 @@
 package Util;
 
 import Models.User;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -14,28 +15,20 @@ import java.sql.SQLException;
 
 public class DBHelper {
 
-    private static SessionFactory sessionFactory;
-    private static Connection connection;
+    private static DBHelper dbHelper;
 
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            sessionFactory = createSessionFactory();
+    private DBHelper(){}
+
+    public static DBHelper getDBHelper(){
+        if (dbHelper == null){
+            dbHelper = new DBHelper();
         }
-        return sessionFactory;
-    }
 
-    public static Connection getConnection() {
-        if (connection == null) {
-            connection = getMysqlConnection();
-        }
-        return connection;
+        return dbHelper;
     }
-
-    @SuppressWarnings("UnusedDeclaration")
-    private static Configuration getMySqlConfiguration() {
+    public Session getSession() {
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(User.class);
-
         configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         configuration.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
         configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/mydbtest?serverTimezone=UTC");
@@ -43,19 +36,13 @@ public class DBHelper {
         configuration.setProperty("hibernate.connection.password", "admin");
         configuration.setProperty("hibernate.show_sql", "true");
         configuration.setProperty("hibernate.hbm2ddl.auto", "update");
-
-        return configuration;
-    }
-
-    private static SessionFactory createSessionFactory() {
-        Configuration configuration = getMySqlConfiguration();
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
         builder.applySettings(configuration.getProperties());
         ServiceRegistry serviceRegistry = builder.build();
-        return configuration.buildSessionFactory(serviceRegistry);
+        return configuration.buildSessionFactory(serviceRegistry).openSession();
     }
 
-    private static Connection getMysqlConnection() {
+    public Connection getConnection() {
         try {
             DriverManager.registerDriver((Driver) Class.forName("com.mysql.jdbc.Driver").newInstance());
 

@@ -15,7 +15,7 @@ import java.util.List;
 @WebServlet("/edit")
 public class EditServlet extends HttpServlet {
 
-    UserService userService = new UserService(UserDAO.getJDBCDao());
+    UserService userService = UserService.getInstance();
     List<String> editUser = new ArrayList<>();
 
     @Override

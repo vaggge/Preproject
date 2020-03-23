@@ -1,6 +1,7 @@
 package DAO;
 
 import Models.User;
+import Util.DBHelper;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -10,26 +11,25 @@ import java.util.List;
 
 public class UserHibernateDAO implements UserDAO {
 
-    private SessionFactory sessionFactory;
+    private DBHelper dbHelper = DBHelper.getDBHelper();
 
-    public UserHibernateDAO (SessionFactory sessionFactory){
-        this.sessionFactory = sessionFactory;
-    }
+    public UserHibernateDAO (){}
 
     @Override
     public boolean isUserExist(String name) {
-        Session session = sessionFactory.openSession();
+        Session session = dbHelper.getSession();
         Transaction transaction = session.beginTransaction();
         Query<User> query = session.createQuery("FROM User WHERE name = ?", User.class);
         query.setParameter(0, name);
         User user = query.uniqueResult();
         transaction.commit();
+        session.close();
         return user != null;
     }
 
     @Override
     public List<User> getAllUsers() {
-        Session session = sessionFactory.openSession();
+        Session session = dbHelper.getSession();
         Transaction transaction = session.beginTransaction();
         List<User> users = session.createQuery("FROM User", User.class).list();
         transaction.commit();
@@ -39,7 +39,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public void addUser(User user) {
-        Session session = sessionFactory.openSession();
+        Session session = dbHelper.getSession();
         Transaction transaction = session.beginTransaction();
         session.save(user);
         transaction.commit();
@@ -48,7 +48,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public void deleteUser(String name) {
-        Session session = sessionFactory.openSession();
+        Session session = dbHelper.getSession();
         Transaction transaction = session.beginTransaction();
         Query query = session.createQuery("DELETE User WHERE name = ?");
         query.setParameter(0, name);
@@ -59,7 +59,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public void changeUserName(String name, String newName) {
-        Session session = sessionFactory.openSession();
+        Session session = dbHelper.getSession();
         Transaction transaction = session.beginTransaction();
         Query query = session.createQuery("UPDATE User SET name = ? WHERE name = ?");
         query.setParameter(0, newName);
@@ -71,7 +71,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public void changeUserPassword(String name, String password) {
-        Session session = sessionFactory.openSession();
+        Session session = dbHelper.getSession();
         Transaction transaction = session.beginTransaction();
         Query query = session.createQuery("UPDATE User SET password = ? WHERE name = ?");
         query.setParameter(0, password);
@@ -83,7 +83,7 @@ public class UserHibernateDAO implements UserDAO {
 
     @Override
     public boolean validateUser(User user) {
-        Session session = sessionFactory.openSession();
+        Session session = dbHelper.getSession();
         Transaction transaction = session.beginTransaction();
         List<User> users = session.createQuery("FROM User where name =? and password = ?", User.class).list();
         boolean result = users.size() > 0;

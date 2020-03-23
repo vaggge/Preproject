@@ -7,14 +7,6 @@ import java.util.List;
 
 public interface UserDAO {
 
-    static UserDAO getJDBCDao(){
-        return new UserJdbcDAO(DBHelper.getConnection());
-    }
-
-    static UserDAO getHibernateDAO(){
-        return new UserHibernateDAO(DBHelper.getSessionFactory());
-    }
-
     boolean isUserExist(String name);
 
     List<User> getAllUsers();

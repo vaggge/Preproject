@@ -1,6 +1,5 @@
 package Servlets;
 
-import DAO.UserDAO;
 import Models.User;
 import Services.UserService;
 
@@ -15,8 +14,7 @@ import java.util.List;
 @WebServlet("/ShowUsersServlet")
 public class ShowUsersServlet extends HttpServlet {
 
-    UserService userService = new UserService(UserDAO.getJDBCDao());
-
+    UserService userService = UserService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -27,6 +25,6 @@ public class ShowUsersServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
+       doGet(req, resp);
     }
 }

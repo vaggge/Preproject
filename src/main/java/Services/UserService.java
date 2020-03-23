@@ -2,15 +2,23 @@ package Services;
 
 import DAO.UserDAO;
 import Models.User;
+import factories.UserDAOFactory;
 
 import java.util.List;
 
 public class UserService {
 
-    private UserDAO userDAO;
+    private static  UserService userService;
 
-    public UserService(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    private UserDAO userDAO = UserDAOFactory.getUserDao();
+
+    private UserService() {}
+
+    public static UserService getInstance(){
+        if (userService == null){
+            userService = new UserService();
+        }
+        return userService;
     }
 
     public List<User> getAllUsers(){
