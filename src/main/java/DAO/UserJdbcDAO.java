@@ -2,7 +2,6 @@ package DAO;
 
 import Models.User;
 import Util.DBHelper;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -104,7 +103,6 @@ public class UserJdbcDAO implements UserDAO {
         } catch (SQLException exc) {
             exc.printStackTrace();
         }
-
     }
 
     @Override

@@ -2,15 +2,16 @@ package Services;
 
 import DAO.UserDAO;
 import Models.User;
-import factories.UserDAOFactory;
+import DAO.UserDAOFactory;
 
+import java.io.IOException;
 import java.util.List;
 
 public class UserService {
 
     private static  UserService userService;
 
-    private UserDAO userDAO = UserDAOFactory.getUserDao();
+    private UserDAO userDAO = getUserDAO();
 
     private UserService() {}
 
@@ -19,6 +20,15 @@ public class UserService {
             userService = new UserService();
         }
         return userService;
+    }
+
+    private UserDAO getUserDAO() {
+        try {
+            userDAO = UserDAOFactory.getUserDao();
+        } catch (IOException | IllegalArgumentException exc){
+            exc.printStackTrace();
+        }
+        return userDAO;
     }
 
     public List<User> getAllUsers(){

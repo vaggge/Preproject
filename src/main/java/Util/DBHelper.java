@@ -23,19 +23,19 @@ public class DBHelper {
         if (dbHelper == null){
             dbHelper = new DBHelper();
         }
-
         return dbHelper;
     }
+
     public Session getSession() {
         Configuration configuration = new Configuration();
         configuration.addAnnotatedClass(User.class);
-        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        configuration.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-        configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/mydbtest?serverTimezone=UTC");
-        configuration.setProperty("hibernate.connection.username", "admin");
-        configuration.setProperty("hibernate.connection.password", "admin");
-        configuration.setProperty("hibernate.show_sql", "true");
-        configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+        configuration.setProperty("hibernate.dialect", ApplicationConfig.getInstance().getHibernateDialect());
+        configuration.setProperty("hibernate.connection.driver_class", ApplicationConfig.getInstance().getHibernateConnectionDriverClass());
+        configuration.setProperty("hibernate.connection.url", ApplicationConfig.getInstance().getHibernateConnectionUrl());
+        configuration.setProperty("hibernate.connection.username", ApplicationConfig.getInstance().getHibernateConnectionUsername());
+        configuration.setProperty("hibernate.connection.password", ApplicationConfig.getInstance().getHibernateConnectionPassword());
+        configuration.setProperty("hibernate.show_sql", ApplicationConfig.getInstance().getHibernateShowSql());
+        configuration.setProperty("hibernate.hbm2ddl.auto", ApplicationConfig.getInstance().getHibernateHbm2ddlAuto());
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
         builder.applySettings(configuration.getProperties());
         ServiceRegistry serviceRegistry = builder.build();
