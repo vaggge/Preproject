@@ -26,18 +26,24 @@ public class AddServlet extends HttpServlet {
         User user = new User(name, password, role);
         boolean registration = false;
 
-        if (req.getAttribute("access") == "false") {
+        if (role.equals("user") || role.equals("admin")){
+
+            if (req.getAttribute("access") == "false") {
             req.setAttribute("isVisible", true);
             getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
-        }
-        else {
-            registration = userService.addUser(user);
-        }
+            }
+            else {
+                 registration = userService.addUser(user);
+            }
             if(registration){
                 req.setAttribute("add", "Add is successful");
             } else {
                 req.setAttribute("add", "Add is unsuccessful");
             }
-            getServletContext().getRequestDispatcher("/admin").forward(req, resp);
+    }
+        else {
+            req.setAttribute("isCorrect", false);
+        }
+        getServletContext().getRequestDispatcher("/admin").forward(req, resp);
     }
 }

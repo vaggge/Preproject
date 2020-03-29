@@ -58,9 +58,11 @@
 </c:if>
 
 <h1>Add new user</h1>
-<p>
-    <big><font color="red"><c:out value="${add}"> </c:out></font></big>
-</p>
+<c:if test="${isCorrect == false}" scope="request" var="isCorrect">
+    <p>
+        <big><font color="red">Role is incorrect!</font></big>
+    </p>
+</c:if>
 <form action="/admin/add" method="post">
     <p>
         <input type="text" name="name" placeholder="Name">

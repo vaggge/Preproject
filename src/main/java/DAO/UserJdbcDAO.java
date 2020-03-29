@@ -72,9 +72,10 @@ public class UserJdbcDAO implements UserDAO {
     public void addUser(User user) {
         try (Connection connection = dbHelper.getConnection()) {
             connection.setAutoCommit(false);
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (name, password) values (?, ?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (name, password, role) values (?, ?, ?)");
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(3, user.getRole());
             preparedStatement.executeUpdate();
             connection.commit();
             preparedStatement.close();
@@ -154,7 +155,7 @@ public class UserJdbcDAO implements UserDAO {
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            user = new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
+            user = new User(resultSet.getString("name"), resultSet.getString("password"), resultSet.getString("role"));
             connection.commit();
             resultSet.close();
 
