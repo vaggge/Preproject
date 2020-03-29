@@ -35,6 +35,10 @@ public class UserService {
         return userDAO.getAllUsers();
     }
 
+    public User getUserByName(String name) {
+        return userDAO.getUserByName(name);
+    }
+
     public boolean addUser(User user) {
         boolean result = false;
         if(!userDAO.isUserExist(user.getName())){
@@ -56,11 +60,15 @@ public class UserService {
         userDAO.changeUserPassword(name, password);
     }
 
-    public boolean validateUser(User user){
-        return userDAO.validateUser(user);
+    public boolean validateUser(String name, String password){
+        return userDAO.validateUser(name, password);
     }
 
     public boolean isUserExist(String name) {
         return userDAO.isUserExist(name);
+    }
+
+    public String getRole(String name, String password){
+        return userDAO.getRole(name, password);
     }
 }

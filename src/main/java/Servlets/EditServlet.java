@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/edit")
+@WebServlet("/admin/edit")
 public class EditServlet extends HttpServlet {
 
     UserService userService = UserService.getInstance();
@@ -20,9 +20,15 @@ public class EditServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        editUser.add(req.getParameter("name"));
-        req.setAttribute("isEditVisible", true);
-        getServletContext().getRequestDispatcher("/ShowUsersServlet").forward(req, resp);
+        if (req.getAttribute("access") == "false") {
+            req.setAttribute("isVisible", true);
+            getServletContext().getRequestDispatcher("/index.jsp").forward(req, resp);
+        }
+        else {
+            editUser.add(req.getParameter("name"));
+            req.setAttribute("isEditVisible", true);
+            getServletContext().getRequestDispatcher("/admin").forward(req, resp);
+        }
     }
 
     @Override
@@ -36,7 +42,7 @@ public class EditServlet extends HttpServlet {
             else {
                 req.setAttribute("isSave", false);
             }
-        getServletContext().getRequestDispatcher("/ShowUsersServlet").forward(req, resp);
+        getServletContext().getRequestDispatcher("/admin").forward(req, resp);
     }
 }
 

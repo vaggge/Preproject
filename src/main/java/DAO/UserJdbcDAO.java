@@ -2,6 +2,11 @@ package DAO;
 
 import Models.User;
 import Util.DBHelper;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,11 +18,12 @@ public class UserJdbcDAO implements UserDAO {
 
     private DBHelper dbHelper = DBHelper.getDBHelper();
 
-    public UserJdbcDAO(){}
+    public UserJdbcDAO() {
+    }
 
     @Override
     public boolean isUserExist(String name) {
-        try (Connection connection = dbHelper.getConnection()){
+        try (Connection connection = dbHelper.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE name = ?");
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -25,33 +31,34 @@ public class UserJdbcDAO implements UserDAO {
             preparedStatement.close();
             resultSet.close();
             return result;
-        } catch (SQLException exc){
+        } catch (SQLException exc) {
             return false;
         }
     }
 
-    public boolean validateUser(User user) {
-        try (Connection connection = dbHelper.getConnection()){
+    @Override
+    public boolean validateUser(String name, String password) {
+        try (Connection connection = dbHelper.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM users WHERE name = ? and password = ?");
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getPassword());
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
             boolean result = resultSet.next();
             preparedStatement.close();
             resultSet.close();
             return result;
-        } catch (SQLException exc){
+        } catch (SQLException exc) {
             return false;
         }
     }
 
     @Override
     public List<User> getAllUsers() {
-        try (Connection connection = dbHelper.getConnection()){
+        try (Connection connection = dbHelper.getConnection()) {
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM users").executeQuery();
             List<User> users = new ArrayList<User>();
             while (resultSet.next()) {
-                users.add(new User(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3)));
+                users.add(new User(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4)));
             }
             resultSet.close();
             return users;
@@ -63,7 +70,7 @@ public class UserJdbcDAO implements UserDAO {
 
     @Override
     public void addUser(User user) {
-        try (Connection connection = dbHelper.getConnection()){
+        try (Connection connection = dbHelper.getConnection()) {
             connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users (name, password) values (?, ?)");
             preparedStatement.setString(1, user.getName());
@@ -78,7 +85,7 @@ public class UserJdbcDAO implements UserDAO {
 
     @Override
     public void deleteUser(String name) {
-        try (Connection connection = dbHelper.getConnection()){
+        try (Connection connection = dbHelper.getConnection()) {
             connection.setAutoCommit(false);
             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM users WHERE name = ?");
             preparedStatement.setString(1, name);
@@ -115,8 +122,45 @@ public class UserJdbcDAO implements UserDAO {
             preparedStatement.executeUpdate();
             preparedStatement.close();
             connection.commit();
+        } catch (SQLException exc) {
+            exc.printStackTrace();
+        }
+    }
+
+    @Override
+    public String getRole(String name, String password) {
+        String role = null;
+        try (Connection connection = dbHelper.getConnection()) {
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT role from users where name =? and password = ?");
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            role = resultSet.getString(1);
+            connection.commit();
+        } catch (SQLException exc) {
+            exc.printStackTrace();
+        }
+        return role;
+    }
+
+    @Override
+    public User getUserByName(String name) {
+        User user = null;
+        try (Connection connection = dbHelper.getConnection()) {
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from users where name = ?");
+            preparedStatement.setString(1, name);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            user = new User(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
+            connection.commit();
+            resultSet.close();
+
         } catch (SQLException exc){
             exc.printStackTrace();
         }
+        return user;
     }
 }

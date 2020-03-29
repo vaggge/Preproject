@@ -19,5 +19,11 @@ public interface UserDAO {
 
     void changeUserPassword(String name, String password);
 
-    boolean validateUser(User user);
+    boolean validateUser(String name, String password);
+
+    String getRole(String name, String password);
+
+    User getUserByName(String name);
+
+
 }

@@ -9,62 +9,31 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
   <head>
-    <title>Users</title>
+    <title>Login Page</title>
   </head>
-  <table border="1" width="25%" cellpadding="5">
-    <h1>Users list</h1>
-    <c:set var = "isSave" scope = "request" value = "${isSave}"/>
-    <c:choose>
-      <c:when test = "${isSave == true}">
-        <p>
-          <big><font color="red">Editing was successful</font></big>
-        </p>
-      </c:when>
-      <c:when test = "${isSave == false}">
-        <p>
-          <big><font color="red">The name is busy</font></big>
-        </p>
-      </c:when>
-    </c:choose>
-    <c:if test="${isVisible == true}" scope="request" var="isVisible"><big><font color="red">User was delete</font></big></c:if>
-<tr><td><p><b>ID</b></p></td><td><p><b>Name</b></p></td><td><p><b>Password</b></p></td><td><p><b>Action</b></p></td></tr>
-    <c:set var="users" scope="request" value="${users}"/>
-    <c:forEach items="${users}" var="user">
-      <tr><td>
-          ${user.id} </td><td>${user.name}</td><td>${user.password}</td>
-        <td>
-          <form action="/delete" method="post">
-            <button name="name" value="${user.name}" type="submit" onclick='this.form.submit()'>Delete</button>
-      </form>
-        <form action="/edit" method="get">
-          <button name = "name" value = "${user.name}" type="submit" onclick='this.form.submit()'>Edit</button>
-        </form>
-        </td></tr>
-    </c:forEach>
-  </table>
-
-  <c:if test="${isEditVisible == true}" scope="request" var="isVisible">
-      <form action="/edit" method="post">
-        Set new name
-        <input type="text" name="newName">
-        Set new password
-        <input type="text" name="newPassword">
-        <input type="submit" name="submit" value="Save">
-      </form>
-    </c:if>
-
-  <h1>Add new user</h1>
-  <p>
-  <big><font color="red"><c:out value="${add}"> </c:out></font></big>
-  </p>
-  <form action="/add" method="post">
-    <p>
-    <input type="text" name="name" placeholder="Name">
-    </p>
-    <p>
-    <input type="password" name="password" placeholder="Password">
-    </p>
-    <input type = "submit" name = "submit" value = "Add">
-  </form>
-  </body>
+ <body>
+ <br><br><br><p  align="center" style="font-size: 35px"><strong>Login Page</strong></p>
+ <c:set var="isLogin" scope="session" value="${isLogin}" />
+ <c:choose>
+     <c:when test = "${isLogin == null}">
+         <div id="action_form" style="left: 50%;margin-left: -150px;position: absolute;width: 1000px;margin-top: 1%;">
+             <c:if test="${isVisible == true}">
+                 <p> <big><font color="red">Something is wrong</font></big></p>
+             </c:if>
+             <form action="/login" method="post">
+                 <input type="text" name="name" placeholder="Name" >
+                 <input type="password" name="password" placeholder="Password">
+                 <input type="submit" value="Login">
+             </form>
+         </div>
+     </c:when>
+     <c:when test = "${isLogin == true}">
+     <br><br><br><p  align="center" style="font-size: 35px"><strong>Hello, <c:out value="${user.name}"/>! </p></strong>
+ <form action="/logout" method="post">
+     <p align="center"><button name = "name" value = "${user.name}" type="submit" onclick='this.form.submit()'>Logout</button>
+     </p>
+         </form>
+     </c:when>
+ </c:choose>
+ </body>
 </html>

@@ -82,13 +82,41 @@ public class UserHibernateDAO implements UserDAO {
     }
 
     @Override
-    public boolean validateUser(User user) {
+    public boolean validateUser(String name, String password) {
         Session session = dbHelper.getSession();
         Transaction transaction = session.beginTransaction();
-        List<User> users = session.createQuery("FROM User where name =? and password = ?", User.class).list();
+        Query<User> query = session.createQuery("FROM User where name =? and password = ?", User.class);
+        query.setParameter(0, name);
+        query.setParameter(1, password);
+        List<User> users = query.list();
         boolean result = users.size() > 0;
         transaction.commit();
         session.close();
         return result;
+    }
+
+    @Override
+    public String getRole(String name, String password) {
+        Session session = dbHelper.getSession();
+        Transaction transaction = session.beginTransaction();
+        Query<String> query = session.createQuery("SELECT role FROM User WHERE name = ? and password =?", String.class);
+        query.setParameter(0, name);
+        query.setParameter(1, password);
+        String role = query.uniqueResult();
+        transaction.commit();
+        session.close();
+        return role;
+    }
+
+    @Override
+    public User getUserByName(String name) {
+        Session session = dbHelper.getSession();
+        Transaction transaction = session.beginTransaction();
+        Query<User> query = session.createQuery("FROM User where name = ?", User.class);
+        query.setParameter(0, name);
+        List<User> users = query.list();
+        transaction.commit();
+        session.close();
+        return users.get(0);
     }
 }
