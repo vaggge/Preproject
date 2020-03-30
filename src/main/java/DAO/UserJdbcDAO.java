@@ -155,7 +155,7 @@ public class UserJdbcDAO implements UserDAO {
             preparedStatement.setString(1, name);
             ResultSet resultSet = preparedStatement.executeQuery();
             resultSet.next();
-            user = new User(resultSet.getString("name"), resultSet.getString("password"), resultSet.getString("role"));
+            user = new User(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getString("password"), resultSet.getString("role"));
             connection.commit();
             resultSet.close();
 
